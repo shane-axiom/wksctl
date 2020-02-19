@@ -438,7 +438,7 @@ func (a *MachineActuator) update(ctx context.Context, cluster *clusterv1.Cluster
 
 	if diffedPlan, err := plandiff.GetUnifiedDiff(currentPlan, planJSON); err == nil {
 		contextLog.Info("........................ DIFF PLAN ........................")
-		contextLog.Info(diffedPlan)
+		fmt.Print(diffedPlan)
 	} else {
 		contextLog.Infof("DIFF PLAN Error: %v", err)
 	}
@@ -503,10 +503,10 @@ func (a *MachineActuator) update(ctx context.Context, cluster *clusterv1.Cluster
 	// OK not upgrade or downgrade? so why this?
 	// This is non-logical update becuse it's already done by kubeadm?
 	//
-	// if err = a.performActualUpdate(installer, machine, node, nodePlan, c); err != nil {
-	//	return err
-	// }
-	//
+	if err = a.performActualUpdate(installer, machine, node, nodePlan, c); err != nil {
+		return err
+	}
+
 	if err = a.setNodeAnnotation(node, planKey, planJSON); err != nil {
 		return err
 	}
